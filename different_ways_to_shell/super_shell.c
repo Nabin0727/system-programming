@@ -3,21 +3,50 @@
 #include<sys/wait.h>
 #include<stdlib.h>
 
+// shell input function
+char *shell_get_input(void)
+{
+	char *buf;
+	size_t bufsize;
 
-int main(int ac, char **av)
-{	
-	(void)ac;
-	int status;
-
-	// child process
-	if (fork() ==0)
+	buf = NULL;
+	printf("$ ");
+	fflush(stdout); // this clears buffer by pushing its content, hepls in smooth '$' print to stdout
+	if(getline(&buf, &bufsize, stdin) == -1)
 	{
-		execvp(av[1], av + 1);
+		buf = NULL;
+		if(feof(stdin))
+			printf("[EOF], recevied! Exiting shell!");
+		else
+			printf("Getline failed");
+
+		free(buf);
+		return NULL;
+
+	}
+	return buf;
+}
+int main()
+{	
+	//REPL
+	// Read -> Evaluate -> Print/Execute -> Loop
+	
+	char *input;
+
+	while(1) 
+	{	
+		input = shell_get_input();
+		// get line
+		printf("%s", input);
+
+		
+		// get tokens --> parsing --> evluating
+		
+		// exectute
 	}
 
-	wait(&status);
-
-
+	free(input);
+	
 	//retun 0;
 	return EXIT_SUCCESS;
 }
