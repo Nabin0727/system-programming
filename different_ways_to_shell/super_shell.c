@@ -8,10 +8,15 @@ char *shell_get_input(void)
 {
 	char *buf;
 	size_t bufsize;
-
+	char cwd[BUFSIZ];
+	
+	// Getting current directory through getcwd
+	getcwd(cwd,sizeof(cwd));
+	
 	buf = NULL;
-	printf("$ ");
+	printf("[%s] $ ", cwd);
 	fflush(stdout); // this clears buffer by pushing its content, hepls in smooth '$' print to stdout
+	
 	if(getline(&buf, &bufsize, stdin) == -1)
 	{
 		buf = NULL;
