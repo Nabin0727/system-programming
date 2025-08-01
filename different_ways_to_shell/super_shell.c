@@ -3,6 +3,24 @@
 #include<sys/wait.h>
 #include<stdlib.h>
 
+// printing banner
+void printbanner() {
+    printf("  ,----..              ,--,    ,--,                          ,---, \n");
+    printf(" /   /   \\           ,--.'|  ,--.'|                       ,`--.' | \n");
+    printf("|   :     :          |  | :  |  | :                      /    /  : \n");
+    printf(".   |  ;. /          :  : '  :  : '                .---.:    |.' ' \n");
+    printf(".   ; /--`    ,---.  |  ' |  |  ' |              /.  ./|`----':  | \n");
+    printf(";   | ;      /     \\ '  | |  '  | |            .-' . ' |   '   ' ; \n");
+    printf("|   : |     /    /  ||  | :  |  | :           /___/ \\: |   |   | | \n");
+    printf(".   | '___ .    ' / |'  : |__'  : |__         .   \\  ' .   '   : ; \n");
+    printf("'   ; : .'|'   ;   /||  | '.'|  | '.'|         \\   \\   '   |   | ' \n");
+    printf("'   | '/  :'   |  / |;  :    ;  :    ;          \\   \\      '   : | \n");
+    printf("|   :    / |   :    ||  ,   /|  ,   /            \\   \\ |   ;   |.' \n");
+    printf(" \\   \\ .'   \\   \\  /  ---`-'  ---`-'              '---\"    '---'   \n");
+    printf("  `---`      `----'                                                \n");
+
+}
+
 // shell input function
 char *shell_get_input(void)
 {
@@ -33,14 +51,15 @@ char *shell_get_input(void)
 }
 int main()
 {	
+	// calling banner
+	printbanner();
 	//REPL
 	// Read -> Evaluate -> Print/Execute -> Loop
 	
 	char *input;
 
-	while(1) 
+	while((input=shell_get_input())) 
 	{	
-		input = shell_get_input();
 		// get line
 		printf("%s", input);
 
