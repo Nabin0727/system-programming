@@ -1,9 +1,13 @@
-#include<stdio.h>
-#include<unistd.h>
-#include<sys/wait.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <stdlib.h>
+#include <string.h>
+#include<sysexits.h>
 
-// printing banner
+#define DEL "\n\t \v\f\r"
+
+// 1. Banner Function
 void printbanner() {
     printf("  ,----..              ,--,    ,--,                          ,---, \n");
     printf(" /   /   \\           ,--.'|  ,--.'|                       ,`--.' | \n");
@@ -18,60 +22,107 @@ void printbanner() {
     printf("|   :    / |   :    ||  ,   /|  ,   /            \\   \\ |   ;   |.' \n");
     printf(" \\   \\ .'   \\   \\  /  ---`-'  ---`-'              '---\"    '---'   \n");
     printf("  `---`      `----'                                                \n");
-
 }
 
-// shell input function
-char *shell_get_input(void)
-{
-	char *buf;
-	size_t bufsize;
-	char cwd[BUFSIZ];
-	
-	// Getting current directory through getcwd
-	getcwd(cwd,sizeof(cwd));
-	
-	buf = NULL;
-	printf("[%s] $ ", cwd);
-	fflush(stdout); // this clears buffer by pushing its content, hepls in smooth '$' print to stdout
-	
-	if(getline(&buf, &bufsize, stdin) == -1)
-	{
-		buf = NULL;
-		if(feof(stdin))
-			printf("[EOF], recevied! Exiting shell!");
-		else
-			printf("Getline failed");
+// 2. Shell Input Function
+char *shell_get_input(void) {
+    char *buf = NULL;
+    size_t bufsize = 0;
+    char cwd[BUFSIZ];
 
-		free(buf);
-		return NULL;
+    if (getcwd(cwd, sizeof(cwd)) == NULL) {
+        perror("getcwd failed");
+    }
 
-	}
-	return buf;
+    printf("[%s] $ ", cwd);
+    fflush(stdout);
+
+    if (getline(&buf, &bufsize, stdin) == -1) {
+        if (feof(stdin))
+            printf("[EOF] received! Exiting shell!\n");
+        else
+            perror("getline failed");
+
+        free(buf);
+        return NULL;
+    }
+
+    return buf;
 }
-int main()
+
+// 3. Split Input Line into Tokens (argv)
+char **shell_split_line(char *line) {
+    size_t bufsize = BUFSIZ;
+    size_t position = 0;
+
+    char **tokens = malloc(bufsize * sizeof(char *));
+    if (!tokens) {
+        fprintf(stderr, "allocation error\n");
+        exit(EXIT_FAILURE);
+    }
+
+    char *token = strtok(line, DEL);
+    while (token != NULL) {
+        tokens[position++] = token;
+
+        if (position >= bufsize) {
+            bufsize *= 2;
+            tokens = realloc(tokens, bufsize * sizeof(char *));
+            if (!tokens) {
+                fprintf(stderr, "allocation error\n");
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        token = strtok(NULL, DEL);
+    }
+
+    tokens[position] = NULL; // Null-terminate the array
+    return tokens;
+}
+
+// 4. Execute Shell
+void execute_shell(char **args)
 {	
-	// calling banner
-	printbanner();
-	//REPL
-	// Read -> Evaluate -> Print/Execute -> Loop
-	
-	char *input;
+	pid_t pid;
+	pid = fork();
 
-	while((input=shell_get_input())) 
-	{	
-		// get line
-		printf("%s", input);
-
-		
-		// get tokens --> parsing --> evluating
-		
-		// exectute
+	if(pid < 0)
+		{
+			perror("fork failed");
+			exit(EX_OSERR);
+		}
+	else if (pid == 0){
+		if(execvp(args[0],args) == -1){
+			perror("execvp failed");
+			exit(EX_UNAVAILABLE);
+		}
 	}
 
-	free(input);
-	
-	//retun 0;
-	return EXIT_SUCCESS;
+	else{
+		// Parent process: wait for child to finish
+		int status;
+		waitpid(pid, &status, 0);
+	}
 }
 
+// 5. Main Shell Loop
+int main() {
+    printbanner();
+
+    char *input;
+    char **args;
+
+    while ((input = shell_get_input())) {
+        args = shell_split_line(input);
+
+
+        // Execute command
+	execute_shell(args);
+
+        free(input);
+        free(args);
+    }
+
+    return EXIT_SUCCESS;
+}
