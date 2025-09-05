@@ -7,6 +7,9 @@
 
 #define DEL "\n\t \v\f\r"
 
+// old pwd
+static char oldpwd[BUFSIZ] = "";
+
 // 1. Banner Function
 void printbanner() {
     printf("  ,----..              ,--,    ,--,                          ,---, \n");
@@ -142,7 +145,11 @@ void execute_cd(char **args)
 		get_cwd();
 	}
 	else{
-		printf("custom");
+		if(chdir(args[1]) != 0)
+		{
+			perror("cd failed");
+		}
+		get_cwd();
 	}
 
 
