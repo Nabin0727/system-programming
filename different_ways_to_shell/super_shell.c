@@ -106,6 +106,28 @@ void execute_shell(char **args)
 	}
 }
 
+// Execute cd command
+void execute_cd(char **args)
+{
+	if(strcmp(args[1], "-"))
+	{
+		printf(" - ");
+	}
+	else if(args[1] == "\0")
+	{
+		printf(" 0");
+	}
+	else if(strcmp(args[1], "/") == 0)
+	{
+		printf(" root");
+	}
+	else{
+		printf("custom");
+	}
+
+
+}
+
 // 5. Main Shell Loop
 int main() {
     printbanner();
@@ -118,7 +140,13 @@ int main() {
 
 
         // Execute command
-	execute_shell(args);
+	
+	if((strcmp(args[0], "cd") == 0)){
+		execute_cd(args);
+	}
+	else{
+		execute_shell(args);
+	}
 
         free(input);
         free(args);
