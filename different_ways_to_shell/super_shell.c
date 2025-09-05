@@ -34,7 +34,8 @@ void get_cwd(){
 		perror("get cwd failed");
 	}
 
-	//printf("[%s] $", cwd);
+//	printf("[%s] $", cwd);
+	fflush(stdout);
 }
 
 // 2. Shell Input Function
@@ -49,6 +50,8 @@ char *shell_get_input(void) {
 
     printf("[%s] $ ", cwd);
     fflush(stdout);
+
+    //get_cwd();
 
     if (getline(&buf, &bufsize, stdin) == -1) {
         if (feof(stdin))
