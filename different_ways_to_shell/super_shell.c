@@ -24,6 +24,19 @@ void printbanner() {
     printf("  `---`      `----'                                                \n");
 }
 
+// Get cwd function
+
+void get_cwd(){
+	char cwd[BUFSIZ];
+	
+	if(getcwd(cwd, sizeof(cwd)) == NULL)
+	{
+		perror("get cwd failed");
+	}
+
+	//printf("[%s] $", cwd);
+}
+
 // 2. Shell Input Function
 char *shell_get_input(void) {
     char *buf = NULL;
@@ -120,7 +133,10 @@ void execute_cd(char **args)
 	}
 	else if(strcmp(args[1], "/") == 0)
 	{
-		printf(" root");
+		if(chdir(args[1]) != 0){
+			perror("cd failed");
+		}
+		get_cwd();
 	}
 	else{
 		printf("custom");
@@ -138,7 +154,13 @@ int main() {
 
     while ((input = shell_get_input())) {
         args = shell_split_line(input);
-
+	
+	if(args[0] == NULL)
+	{
+		free(args);
+		free(input);
+		continue;
+	}
 
         // Execute command
 	
@@ -148,10 +170,9 @@ int main() {
 	else{
 		execute_shell(args);
 	}
+	free(args);
+	free(input);
 
-        free(input);
-        free(args);
     }
-
     return EXIT_SUCCESS;
 }
