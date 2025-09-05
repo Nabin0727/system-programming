@@ -108,14 +108,15 @@ void execute_shell(char **args)
 
 // Execute cd command
 void execute_cd(char **args)
+
 {
-	if(strcmp(args[1], "-"))
+	if(args[1] == NULL)
+	{
+		printf("null");
+	}
+	else if(strcmp(args[1], "-") == 0)
 	{
 		printf(" - ");
-	}
-	else if(args[1] == "\0")
-	{
-		printf(" 0");
 	}
 	else if(strcmp(args[1], "/") == 0)
 	{
