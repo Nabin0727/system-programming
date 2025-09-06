@@ -7,8 +7,9 @@
 
 #define DEL "\n\t \v\f\r"
 
-// old pwd
-static char oldpwd[BUFSIZ] = "";
+// old and current dir
+static char old_dir[BUFSIZ] = "";
+static char current_dir[BUFSIZ] = "";
 
 // 1. Banner Function
 void printbanner() {
@@ -37,6 +38,8 @@ void get_cwd(){
 		perror("get cwd failed");
 	}
 
+	strcpy(current_dir,cwd);
+
 //	printf("[%s] $", cwd);
 	fflush(stdout);
 }
@@ -50,6 +53,8 @@ char *shell_get_input(void) {
     if (getcwd(cwd, sizeof(cwd)) == NULL) {
         perror("getcwd failed");
     }
+    strcpy(current_dir,cwd);
+
 
     printf("[%s] $ ", cwd);
     fflush(stdout);
@@ -135,16 +140,22 @@ void execute_cd(char **args)
 	}
 	else if(strcmp(args[1], "-") == 0)
 	{
-		printf(" - ");
+		if(chdir(old_dir) != 0)
+		{
+			perror("cd failed");
+		//printf(" - ");
+		}
 	}
 	else if(strcmp(args[1], "/") == 0)
 	{
+		strcpy(old_dir, current_dir);
 		if(chdir(args[1]) != 0){
 			perror("cd failed");
 		}
 		get_cwd();
 	}
 	else{
+		strcpy(old_dir, current_dir);
 		if(chdir(args[1]) != 0)
 		{
 			perror("cd failed");
