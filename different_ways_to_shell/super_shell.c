@@ -163,14 +163,16 @@ void execute_cd(char **args)
 	}
 	else if(strcmp(args[1], "-") == 0)
 	{
-		strcpy(old_dir, current_dir);
+		//strcpy(old_dir, current_dir);
+		get_cwd();
 		if(chdir(old_dir) != 0)
 		{
 			perror("cd failed");
 		//printf(" - ");
 		}
 		printf("%s\n",old_dir);
-		get_cwd();
+		//get_cwd();
+		strcpy(old_dir, current_dir);
 		return;
 	}
 	else if(strcmp(args[1], "/") == 0)
