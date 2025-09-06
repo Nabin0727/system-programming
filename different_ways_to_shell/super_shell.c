@@ -50,6 +50,7 @@ char *shell_get_input(void) {
     size_t bufsize = 0;
     char cwd[BUFSIZ];
 
+    //strcpy(old_dir,current_dir);
     if (getcwd(cwd, sizeof(cwd)) == NULL) {
         perror("getcwd failed");
     }
@@ -130,21 +131,47 @@ void execute_shell(char **args)
 	}
 }
 
+// Execute cd home
+void cd_home()
+{
+	const char *home = getenv("HOME");
+	if(home == NULL)
+	{
+		perror("cd $HOME error");
+	}
+	else{
+		if(chdir(home) !=0)
+		{
+			perror("cd error");
+		}
+	}
+
+}
+
 // Execute cd command
 void execute_cd(char **args)
 
 {
+
+	//strcpy(old_dir, current_dir);
 	if(args[1] == NULL)
 	{
-		printf("null");
+		strcpy(old_dir, current_dir);
+		cd_home();
+		get_cwd();
+		return;
 	}
 	else if(strcmp(args[1], "-") == 0)
 	{
+		strcpy(old_dir, current_dir);
 		if(chdir(old_dir) != 0)
 		{
 			perror("cd failed");
 		//printf(" - ");
 		}
+		printf("%s\n",old_dir);
+		get_cwd();
+		return;
 	}
 	else if(strcmp(args[1], "/") == 0)
 	{
@@ -153,6 +180,7 @@ void execute_cd(char **args)
 			perror("cd failed");
 		}
 		get_cwd();
+		return;
 	}
 	else{
 		strcpy(old_dir, current_dir);
@@ -161,6 +189,7 @@ void execute_cd(char **args)
 			perror("cd failed");
 		}
 		get_cwd();
+		return;
 	}
 
 
