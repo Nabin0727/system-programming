@@ -197,6 +197,12 @@ void execute_cd(char **args)
 
 }
 
+// Execute exit
+//void execude_exit(void)
+//{
+
+//}
+
 // 5. Main Shell Loop
 int main() {
     printbanner();
@@ -218,9 +224,14 @@ int main() {
 	
 	if((strcmp(args[0], "cd") == 0)){
 		execute_cd(args);
+		continue;
+	}
+	else if(strcmp(args[0], "exit") == 0){
+		exit(0);
 	}
 	else{
 		execute_shell(args);
+		continue;
 	}
 	free(args);
 	free(input);
