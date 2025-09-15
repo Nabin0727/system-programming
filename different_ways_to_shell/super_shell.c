@@ -226,6 +226,8 @@ int main() {
 		execute_cd(args);
 		continue;
 	}
+
+	// exit command
 	else if(strcmp(args[0], "exit") == 0){
 		exit(0);
 	}
