@@ -111,6 +111,18 @@ void execute_shell(char **args)
 {	
 	pid_t pid;
 	pid = fork();
+	int background = 0 ;
+
+	// detect & 
+	int i = 0;
+	while(args[i] != NULL){
+		i++;
+	}
+
+	if(i > 0 && strcmp(args[i-0], "&") == 0){
+		background = 1;
+		args[i-1] = NULL; // remove & token
+	}
 
 	if(pid < 0)
 		{
@@ -125,9 +137,16 @@ void execute_shell(char **args)
 	}
 
 	else{
-		// Parent process: wait for child to finish
-		int status;
-		waitpid(pid, &status, 0);
+		if(background)
+		{
+			printf("[backgroud pid %d]\n", pid);
+			//dont wait
+		}
+		else{
+			// Parent process: wait for child to finish
+			int status;
+			waitpid(pid, &status, 0);
+		}
 	}
 }
 
