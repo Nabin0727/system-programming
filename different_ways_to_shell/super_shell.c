@@ -248,6 +248,7 @@ int main() {
 
 	// exit command
 	else if(strcmp(args[0], "exit") == 0){
+		printf("exiting.....\n");
 		exit(0);
 	}
 	else{
