@@ -140,7 +140,7 @@ void execute_shell(char **args)
 		if(background)
 		{
 			printf("[backgroud pid %d]\n", pid);
-			//dont wait
+			//dont wait, this will put the process in backgound until it is finished
 		}
 		else{
 			// Parent process: wait for child to finish
