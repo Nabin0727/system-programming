@@ -252,6 +252,12 @@ int main() {
 		exit(0);
 	}
 	else{
+		int i = 0;
+		while(args[i] != NULL)
+		{
+			
+
+		}
 		execute_shell(args);
 		continue;
 	}
